@@ -260,9 +260,9 @@ def get_item_scaled(img, sz):
     sz = snap(sz, ITEM_SZ_STEP, ITEM_SZ_MIN, ITEM_SZ_MAX)
     atlas = item_atlas.setdefault(id(img), {})
     if sz not in atlas:
-        if len(atlas) > 100:
+        if len(atlas) > 400:
             atlas.clear()
-        atlas[sz] = pygame.transform.smoothscale(img, (sz, sz))
+        atlas[sz] = pygame.transform.scale(img, (sz, sz))
     return atlas[sz], sz
 
 fat_atlas = {}
@@ -279,9 +279,11 @@ def get_fat_scaled(img, h, alpha=180):
         
     # 만약 해당 해상도(h) 이미지가 없으면 새로 생성해서 캐싱
     if h not in atlas:
+        if len(atlas) > 400:
+            atlas.clear()
         bw, bh = img.get_size()
         w = max(1, int(bw * (h / bh)))
-        new_surf = pygame.transform.smoothscale(img, (w, h))
+        new_surf = pygame.transform.scale(img, (w, h))
         if alpha < 255:
             new_surf.set_alpha(alpha)
         atlas[h] = new_surf
@@ -295,11 +297,14 @@ def get_bg_scaled(w, alpha):
     key = (w, alpha)
     surf = bg_atlas.get(key)
     if surf is None:
-        surf = pygame.transform.smoothscale(bg_wall_img, (w, w))
+        if len(bg_atlas) > 200:
+            bg_atlas.clear()
+        surf = pygame.transform.scale(bg_wall_img, (w, w))
         if alpha < 255:
             surf.set_alpha(alpha)
         bg_atlas[key] = surf
     return surf
+
 
 def make_single_fat():
     return {
