@@ -243,9 +243,9 @@ ITEM_SZ_MAX = 700
 ITEM_SZ_STEP = 2
 
 BG_W_MIN = 200
-BG_W_MAX = 3500
-BG_W_STEP = 32
-BG_ALPHA_STEP = 16
+BG_W_MAX = 1500
+BG_W_STEP = 64
+BG_ALPHA_STEP = 32
 
 def snap(v, step, vmin=None, vmax=None):
     v = (int(v) // step) * step
@@ -662,7 +662,7 @@ async def main():
                 # 원근감 지수를 높여(2.2) 더 역동적인 빨려들어감 구현
                 s_f = ((1000 - bg_z) / 1000) ** 2.2
                 radius_ratio_bg = g['visual_purity'] / 100 * 0.3 + 0.7 
-                max_scale = max(2500, int(3500 * radius_ratio_bg))
+                max_scale = max(1200, int(1500 * radius_ratio_bg))
                 
                 w = max(1, int(max_scale * s_f)) 
                 scaled_bg = get_bg_scaled(w, int(160 * s_f))
