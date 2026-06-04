@@ -1,0 +1,26 @@
+# ===== Python =====
+# 파이썬이 자동 생성하는 캐시 (올릴 필요 없음)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상환경 폴더
+venv/
+.venv/
+env/
+ENV/
+
+# 배포/빌드 관련 자동 생성물
+build/
+dist/
+*.egg-info/
+
+# ===== 에디터 / 개발 환경 설정 =====
+.vscode/
+.idea/
+*.swp
+
+# ===== 운영체제 잡파일 =====
+.DS_Store
+Thumbs.db
+desktop.ini
