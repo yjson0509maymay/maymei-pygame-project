@@ -4,6 +4,15 @@ import math
 import time
 import os
 
+def resolve_path(filename):
+    if filename.endswith('.ttf'):
+        return os.path.join('assets', 'fonts', filename)
+    elif filename.endswith(('.wav', '.mp3')):
+        return os.path.join('assets', 'sounds', filename)
+    elif filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+        return os.path.join('assets', 'images', filename)
+    return filename
+
 # 1. 초기화 및 설정
 # [초기화] Pygame 엔진을 시작하고 화면 크기(1000x1000)를 설정합니다.
 pygame.init()
@@ -29,10 +38,11 @@ hole_surf = pygame.Surface((600, 600), pygame.SRCALPHA)
 
 # 폰트 로드
 try:
-    font = pygame.font.Font('DungGeunMo.ttf', 20)
-    big_font = pygame.font.Font('DungGeunMo.ttf', 35)  # 크기를 35 정도로 키움
-    small_font = pygame.font.Font('DungGeunMo.ttf', 15)
-    bigbig_font = pygame.font.Font('DungGeunMo.ttf', 70)
+    font_path = resolve_path('DungGeunMo.ttf')
+    font = pygame.font.Font(font_path, 20)
+    big_font = pygame.font.Font(font_path, 35)  # 크기를 35 정도로 키움
+    small_font = pygame.font.Font(font_path, 15)
+    bigbig_font = pygame.font.Font(font_path, 70)
 except:
     font = pygame.font.SysFont("malgungothic", 20)
     big_font = pygame.font.SysFont("malgungothic", 35, bold=True)
@@ -41,8 +51,9 @@ except:
 
 # 이미지 로드 함수
 def load_img(name, size=(200, 200), color=(100, 0, 0)):
-    if os.path.exists(name):
-        return pygame.transform.scale(pygame.image.load(name).convert_alpha(), size)
+    resolved_name = resolve_path(name)
+    if os.path.exists(resolved_name):
+        return pygame.transform.scale(pygame.image.load(resolved_name).convert_alpha(), size)
     surf = pygame.Surface(size, pygame.SRCALPHA)
     pygame.draw.circle(surf, color, (size[0]//2, size[1]//2), size[0]//2)
     return surf
@@ -110,8 +121,9 @@ tutorial_img = load_img("tutorial.png", (WIDTH, HEIGHT))
 
 # 지방 이미지 로드
 def load_keep_ratio(name, target_h=150):
-    if not os.path.exists(name): return None
-    img = pygame.image.load(name).convert_alpha()
+    resolved_name = resolve_path(name)
+    if not os.path.exists(resolved_name): return None
+    img = pygame.image.load(resolved_name).convert_alpha()
     w, h = img.get_size()
     new_w = int(w * (target_h / h))
     scaled = pygame.transform.scale(img, (new_w, target_h))
@@ -119,8 +131,9 @@ def load_keep_ratio(name, target_h=150):
     return scaled
 
 def load_countdown_img(name, target_h=200):
-    if not os.path.exists(name): return None
-    img = pygame.image.load(name).convert_alpha()
+    resolved_name = resolve_path(name)
+    if not os.path.exists(resolved_name): return None
+    img = pygame.image.load(resolved_name).convert_alpha()
     w, h = img.get_size()
     new_w = int(w * (target_h / h))
     return pygame.transform.scale(img, (new_w, target_h))
@@ -145,35 +158,36 @@ if not fat_obstacle_imgs:
 pygame.mixer.init()
 SFX = {}
 def load_sfx(name, file):
-    try: SFX[name] = pygame.mixer.Sound(file)
+    resolved_file = resolve_path(file)
+    try: SFX[name] = pygame.mixer.Sound(resolved_file)
     except: SFX[name] = None
 try:
-    bgm_music = pygame.mixer.Sound("bgm.wav")
+    bgm_music = pygame.mixer.Sound(resolve_path("bgm.wav"))
     bgm_music.set_volume(1.0)
 except:
     bgm_music = None
 # tutorial.wav
 try:
-    tutorial_music = pygame.mixer.Sound("tutorial.wav")
+    tutorial_music = pygame.mixer.Sound(resolve_path("tutorial.wav"))
     tutorial_music.set_volume(1.0)
 except:
     tutorial_music = None
 
 # cpr.wav
 try:
-    cpr_music = pygame.mixer.Sound("cpr.wav")
+    cpr_music = pygame.mixer.Sound(resolve_path("cpr.wav"))
 except:
     cpr_music = None
 
 # heartbeat.wav
 try:
-    heartbeat_music = pygame.mixer.Sound("heartbeat.wav")
+    heartbeat_music = pygame.mixer.Sound(resolve_path("heartbeat.wav"))
 except:
     heartbeat_music = None
 
 # hylight.wav
 try:
-    hylight_music = pygame.mixer.Sound("hylight.wav")
+    hylight_music = pygame.mixer.Sound(resolve_path("hylight.wav"))
     hylight_music.set_volume(1.0)
 except:
     hylight_music = None
