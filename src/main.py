@@ -256,18 +256,13 @@ def snap(v, step, vmin=None, vmax=None):
 item_atlas = {}
 bg_atlas = {}
 
-def build_item_atlas_for_image(img):
-    atlas = {}
-    for sz in range(ITEM_SZ_MIN, ITEM_SZ_MAX + 1, ITEM_SZ_STEP):
-        atlas[sz] = pygame.transform.smoothscale(img, (sz, sz))
-    item_atlas[id(img)] = atlas
-
 def get_item_scaled(img, sz):
     sz = snap(sz, ITEM_SZ_STEP, ITEM_SZ_MIN, ITEM_SZ_MAX)
-    atlas = item_atlas.get(id(img))
-    if atlas is None:
-        build_item_atlas_for_image(img)
-        atlas = item_atlas[id(img)]
+    atlas = item_atlas.setdefault(id(img), {})
+    if sz not in atlas:
+        if len(atlas) > 100:
+            atlas.clear()
+        atlas[sz] = pygame.transform.smoothscale(img, (sz, sz))
     return atlas[sz], sz
 
 fat_atlas = {}
@@ -293,16 +288,6 @@ def get_fat_scaled(img, h, alpha=180):
         
     return atlas[h]
 
-def build_all_item_atlases():
-    for k, v in ITEM_IMAGES.items():
-        if k == "special":
-            for im in v: build_item_atlas_for_image(im)
-        else:
-            build_item_atlas_for_image(v)
-    for im in GOOD_ITEM_IMAGES.values():
-        build_item_atlas_for_image(im)
-
-build_all_item_atlases()
 
 def get_bg_scaled(w, alpha):
     w = snap(w, BG_W_STEP, BG_W_MIN, BG_W_MAX)
